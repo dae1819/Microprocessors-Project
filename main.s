@@ -3,7 +3,8 @@
 extrn	UART_Setup, UART_Transmit_Message  ; external uart subroutines
 extrn	LCD_Setup, LCD_Write_Message, LCD_Write_Hex ; external LCD subroutines
 extrn	ADC_Setup, ADC_Read		   ; external ADC subroutines
-	
+extrn	Rotate_Servo    
+    
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
 delay_count:ds 1    ; reserve one byte for counter in the delay routine
@@ -29,9 +30,27 @@ setup:	bcf	CFGS	; point to Flash program memory
 	call	UART_Setup	; setup UART
 	call	LCD_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
-	goto	start
+	goto	init
 	
 	; ******* Main programme ****************************************
+init:	
+	
+	movlw	5
+	call	Rotate_Servo
+
+
+
+
+
+
+
+
+
+    
+    
+    
+
+
 start: 	lfsr	0, myArray	; Load FSR0 with address in RAM	
 	movlw	low highword(myTable)	; address of data in PM
 	movwf	TBLPTRU, A		; load upper bits to TBLPTRU
