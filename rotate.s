@@ -34,15 +34,13 @@ Rotate_Servo:
 
 	movwf	pulse_width
 	
-	bcf TRISC,3,A ; configure CCP1 pin for output
 	
-	movlw 0x0C ; enable CCP1 PWM mode
-	movwf CCP1CON,A ;
+	
+	
 
 	
-	movlw 00000101B ; enable Timer2 and set its prescaler 
-	movwf T2CON, A ; 
 	
+	;movlw 0x50
 	movlw 0x1387F; Set rotation period
 	movwf PR2,A 
 	
@@ -50,8 +48,11 @@ Rotate_Servo:
 	movwf CCPR1L,A
 	movwf CCPR1H,A 
 	
-	call time_loop
 	
+	call time_loop
+	;call Rotate_Servo
+	
+	return
 	
 	
 	
@@ -72,13 +73,13 @@ time_loop:
 	return
 	
 	
-	
-ADC_Read:
-	bsf	GO	    ; Start conversion by setting GO bit in ADCON0
-adc_loop:
-	btfsc   GO	    ; check to see if finished
-	bra	adc_loop
-	return
+;	
+;ADC_Read:
+;	bsf	GO	    ; Start conversion by setting GO bit in ADCON0
+;adc_loop:
+;	btfsc   GO	    ; check to see if finished
+;	bra	adc_loop
+;	return
 
 end
 
