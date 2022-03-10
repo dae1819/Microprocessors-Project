@@ -35,7 +35,7 @@ setup:	bcf	CFGS	; point to Flash program memory
 	; ******* Main programme ****************************************
 init:	
 	
-	movlw	5
+	movlw	10000
 	call	Rotate_Servo
 
 
