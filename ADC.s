@@ -1,14 +1,14 @@
 #include <xc.inc>
 
 global  ADC_Setup0,ADC_Setup1,ADC_Setup2,ADC_Setup3, ADC_Read    
-    
+
   
 psect	adc_code, class=CODE
     
 ADC_Setup0:
 	bsf	TRISA, PORTA_RA0_POSN, A  ; pin RA0==AN0 input; CHANGE FOR OTHER PINS!
 	movlb	0x0f
-	bsf	ANSEL1	    ; set AN0 to analog
+	bsf	ANSEL0	    ; set AN0 to analog
 	movlb	0x00
 	movlw   0x01	    ; select AN0 for measurement
 	movwf   ADCON0, A   ; and turn ADC on
@@ -21,7 +21,7 @@ ADC_Setup0:
 ADC_Setup1:
 	bsf	TRISA, PORTA_RA1_POSN, A  ; pin RA1==AN0 input; CHANGE FOR OTHER PINS!
 	movlb	0x0f
-	bsf	ANSEL1	    ; set AN0 to analog
+	bsf	ANSEL0	    ; set AN0 to analog
 	movlb	0x00
 	movlw   0x01	    ; select AN0 for measurement
 	movwf   ADCON0, A   ; and turn ADC on
@@ -34,7 +34,7 @@ ADC_Setup1:
 ADC_Setup2:
 	bsf	TRISA, PORTA_RA2_POSN, A  ; pin RA2==AN0 input; CHANGE FOR OTHER PINS!
 	movlb	0x0f
-	bsf	ANSEL1	    ; set AN0 to analog
+	bsf	ANSEL0	    ; set AN0 to analog
 	movlb	0x00
 	movlw   0x01	    ; select AN0 for measurement
 	movwf   ADCON0, A   ; and turn ADC on
@@ -47,7 +47,7 @@ ADC_Setup2:
 ADC_Setup3:
 	bsf	TRISA, PORTA_RA3_POSN, A  ; pin RA0==AN0 input; CHANGE FOR OTHER PINS!
 	movlb	0x0f
-	bsf	ANSEL1	    ; set AN0 to analog
+	bsf	ANSEL0	    ; set AN0 to analog
 	movlb	0x00
 	movlw   0x01	    ; select AN0 for measurement
 	movwf   ADCON0, A   ; and turn ADC on
