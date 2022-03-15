@@ -6,6 +6,9 @@ psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ;num of 100us in period   
 pulse_width:	ds 1  ;num of 100us in high pulse  
 period:		ds 1    
+h:		ds 1
+l:		ds 1
+   
     
     
 psect	dac_code, class=CODE
@@ -23,16 +26,25 @@ DAC_Int_Hi:
 	
 	
 	;compare counter to pulse_width, specify if 1 or 0 
+	; counter < pulse_width: LATJ -> 1
+	; counter > pulse_width: LATJ -> 0
+
+	
 	movf	pulse_width,W
 	cpfslt	counter
-	movlw	00000000B
+	movff	l,LATJ
+	
 	
 	movf	pulse_width,W
 	cpfsgt	counter
-	movlw	11111111B
+	movff	h,LATJ
 	
 	
-	movwf	LATJ
+	;FIX EQUAL TO COMPARISON ONCE WE KNOW HOW WE ARE COUNTING
+	
+	
+	
+	
 	
 	;Increment counter
 	incf	counter
@@ -40,6 +52,7 @@ DAC_Int_Hi:
 	; clear interrupt flag
 	bcf	TMR0IF		
 	
+	;Reload preload value
 	movlw	0x38
 	movwf	TMR0
 	
@@ -55,6 +68,11 @@ DAC_Setup:
 	movlw	0
 	movwf	counter
 	
+	movlw	00000000B
+	movwf	l
+	
+	movlw	11111111B
+	movwf	h
 	
     
 	clrf	TRISJ, A	; Set PORTD as all outputs
@@ -72,6 +90,6 @@ DAC_Setup:
 	bsf	TMR0IE		; Enable timer0 interrupt
 	bsf	GIE		; Enable all interrupts
 	return
-	
+
 	end
 
