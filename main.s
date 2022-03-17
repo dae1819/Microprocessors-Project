@@ -66,15 +66,14 @@ comparison_loop:
 	movwf	ldr3
 	
 	
+	;COMPARE LEFT/RIGHT
 	
+	left_right:
 	
-	
-	movlw	ldr0
-	subwf	ldr1,0
-	tstfsz	W
-	goto compare_loop
-	
-	
+	movf  ldr0,w
+	subwf ldr1,w
+	btfsc STATUS,2
+	goto top_bottom   
 	
 	
 	movf	ldr0,W,A
@@ -85,9 +84,23 @@ comparison_loop:
 	cpfsgt	ldr1
 	call	right_rotate
     
+	
+	top_bottom: ;COMPARE TOP/BOTTOM
+	
+	
     
+	movf  ldr2,w
+	subwf ldr3,w
+	btfsc STATUS,2
+	goto comparison_loop   
 	
-	
+	movf	ldr2,W,A
+	cpfslt	ldr3
+	call	left_rotate
+    
+	movf	ldr2,W,A
+	cpfsgt	ldr3
+	call	right_rotate
 	
 	
 	
