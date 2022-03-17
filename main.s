@@ -41,6 +41,10 @@ comparison_loop:
 	clrf	ldr2
 	clrf	ldr3
     
+	movlw 0
+	movwf ldr0
+	
+	
 	call ADC_Setup0
 	call measure
 	movwf	ldr0
@@ -50,6 +54,7 @@ comparison_loop:
 	call measure
 	movwf	ldr1
 	
+
 	
 	call ADC_Setup2
 	call measure
@@ -60,26 +65,25 @@ comparison_loop:
 	call measure
 	movwf	ldr3
 	
-    
-    
-    
-;	movlw 5
-;	movwf ldr0
-;	movlw 10
-;	movwf ldr1
 	
-	;ldr0 < ldr1 --> rotate to left 
 	
-	movlw 0
-	movwf ldr0
-	movlw 0
-	movwf ldr1
+	
+	
+	movlw	ldr0
+	subwf	ldr1,0
+	tstfsz	W
+	goto compare_loop
+	
+	
 	
 	
 	movf	ldr0,W,A
-	cpfseq	ldr1
+	cpfslt	ldr1
 	call	left_rotate
     
+	movf	ldr0,W,A
+	cpfsgt	ldr1
+	call	right_rotate
     
     
 	
