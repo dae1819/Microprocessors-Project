@@ -1,5 +1,6 @@
 #include <xc.inc>
 
+global pan_flag,tilt_flag    
 extrn	DAC_Setup, DAC_Int_Hi
 extrn	ADC_Setup0,ADC_Setup1,ADC_Setup2,ADC_Setup3, ADC_Read
 
@@ -12,8 +13,8 @@ posn:	ds 1
 LCD_cnt_l:	ds 1   ; reserve 1 byte for variable LCD_cnt_l
 LCD_cnt_h:	ds 1   ; reserve 1 byte for variable LCD_cnt_h
 LCD_cnt_ms:	ds 1   ; reserve 1 byte for ms counter
-
-
+pan_flag:	ds 1
+tilt_flag:	ds 1
     
 psect	code, abs
 rst:	org	0x0000	; reset vector
@@ -28,7 +29,11 @@ int_hi:	org	0x0008	; high vector, no low vector
 	
 	
 start:	
-	
+	movlw	00000000B
+	movwf pan_flag
+	movlw	00000000B
+	movwf tilt_flag
+    
 	movlw	15
 	movwf	posn
 	
@@ -41,9 +46,6 @@ comparison_loop:
 	clrf	ldr2
 	clrf	ldr3
     
-	movlw 0
-	movwf ldr0
-	
 	
 	call ADC_Setup0
 	call measure
@@ -68,26 +70,45 @@ comparison_loop:
 	
 	;COMPARE LEFT/RIGHT
 	
-	left_right:
-	
+left_right:
+    
+    
+    ;!!!!!!!!!!!!!!!!!
+	movf  ldr0,w	; If light on LDR 0 and LDR 1 is different, set pan_flag as 1 
+	subwf ldr1,w
+	btfss STATUS,2
+	bsf pan_flag,0 
+    
+    
 	movf  ldr0,w
 	subwf ldr1,w
 	btfsc STATUS,2
-	goto top_bottom   
+	call top_bottom   
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	movf	ldr0,W,A
 	cpfslt	ldr1
 	call	left_rotate
     
+	
 	movf	ldr0,W,A
 	cpfsgt	ldr1
 	call	right_rotate
     
 	
-	top_bottom: ;COMPARE TOP/BOTTOM
-	
-	
+top_bottom: ;COMPARE TOP/BOTTOM
+	;!!!!!!!!!!!!!!!!!
+	movf  ldr2,w	; If light on LDR 0 and LDR 1 is different, set tilt_flag as 1 
+	subwf ldr3,w
+	btfss STATUS,2
+	bsf tilt_flag,0 
     
 	movf  ldr2,w
 	subwf ldr3,w
@@ -110,7 +131,6 @@ comparison_loop:
 
 right_rotate:
 	
- 
     
 	incf posn
 	movf posn,W,A
@@ -119,6 +139,10 @@ right_rotate:
 	
 	movlw 1000
 	call LCD_delay_ms
+	
+	;!!!!!!!!!!!!!!!!!
+	clrf tilt_flag
+	clrf pan_flag
 	
 	return
 	
@@ -133,6 +157,9 @@ left_rotate:
 	movlw 1000
 	call LCD_delay_ms
 	
+	;!!!!!!!!!!!!!!!!!
+	clrf tilt_flag
+	clrf pan_flag
 	
 	return
 	
