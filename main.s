@@ -1,6 +1,6 @@
 #include <xc.inc>
 
-global pan_flag,tilt_flag    
+global pan_flag,tilt_flag,ldr0,ldr1,ldr2,ldr3    
 extrn	DAC_Setup, DAC_Int_Hi
 extrn	ADC_Setup0,ADC_Setup1,ADC_Setup2,ADC_Setup3, ADC_Read
 
@@ -9,7 +9,8 @@ ldr0:   ds 1
 ldr1:	ds 1  
 ldr2:	ds 1    
 ldr3:	ds 1
-posn:	ds 1
+posn_pan:	ds 1
+posn_tilt:	ds 1 
 LCD_cnt_l:	ds 1   ; reserve 1 byte for variable LCD_cnt_l
 LCD_cnt_h:	ds 1   ; reserve 1 byte for variable LCD_cnt_h
 LCD_cnt_ms:	ds 1   ; reserve 1 byte for ms counter
@@ -35,7 +36,11 @@ start:
 	movwf tilt_flag
     
 	movlw	15
-	movwf	posn
+	movwf	posn_pan
+	movlw	15
+	movwf	posn_tilt
+	
+	
 	
 	goto comparison_loop
 	
@@ -131,9 +136,20 @@ top_bottom: ;COMPARE TOP/BOTTOM
 
 right_rotate:
 	
-    
-	incf posn
-	movf posn,W,A
+	;Increment correct podn vatiable
+	
+	;if pan, increment pan position    
+	movlw 0
+	cpfseq	pan_flag
+	call inc_posn_pan
+	
+	
+	;if tilt, increment tilt position    
+	movlw 0
+	cpfseq	tilt_flag
+	call inc_posn_tilt
+	
+	
 	
 	call DAC_Setup
 	
@@ -145,12 +161,22 @@ right_rotate:
 	clrf pan_flag
 	
 	return
-	
+
+
 	
 left_rotate:
 	
-	decf posn
-	movf posn,W,A
+	;if pan, decrement pan position    
+	movlw 0
+	cpfseq	pan_flag
+	call dec_posn_pan
+	
+	
+	;if tilt, decrement tilt position    
+	movlw 0
+	cpfseq	tilt_flag
+	call dec_posn_tilt
+	
 	
 	call DAC_Setup
 	
@@ -162,6 +188,26 @@ left_rotate:
 	clrf pan_flag
 	
 	return
+
+	
+inc_posn_pan:
+	incf posn_pan
+	movf posn_pan,W,A
+	return
+dec_posn_pan:
+	decf posn_pan
+	movf posn_pan,W,A
+	return
+inc_posn_tilt:
+	incf posn_tilt
+	movf posn_tilt,W,A
+	return
+dec_posn_tilt:
+	decf posn_tilt
+	movf posn_tilt,W,A
+	return
+	
+	
 	
 measure:
 	call	ADC_Read
