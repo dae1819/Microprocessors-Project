@@ -54,7 +54,7 @@ ADC_Setup2:
 
 	
 ADC_Setup3:
-`	bsf	TRISA, PORTA_RA3_POSN, A  ; pin RA0==AN0 input; CHANGE FOR OTHER PINS!
+	bsf	TRISA, PORTA_RA3_POSN, A  ; pin RA0==AN0 input; CHANGE FOR OTHER PINS!
 	movlb	0x0f
 	bsf	ANSEL3	    ; set AN0 to analog
 	movlb	0x00
