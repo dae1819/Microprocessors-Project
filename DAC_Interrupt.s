@@ -1,7 +1,8 @@
 #include <xc.inc>
 	
 global	DAC_Setup, DAC_Int_Hi
-
+extrn	pan_flag,tilt_flag
+    
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ;num of 100us in period   
 pulse_width:	ds 1  ;num of 100us in high pulse  
@@ -31,20 +32,37 @@ DAC_Int_Hi:
 	; counter > pulse_width: LATJ -> 0
 
 	
-	movf	pulse_width,W
-	cpfslt	counter
-	movff	l,LATJ
+	;If pan_flag then goto pan
+	;if tilt_flag then go to tilt
+	
+	movlw 0
+	cpfseq	pan_flag
+	call pan
 	
 	
-	movf	pulse_width,W
-	cpfsgt	counter
-	movff	h,LATJ
+	movlw 0
+	cpfseq	tilt_flag
+	call tilt
+	
+	
+	
+	
+	
+;	movf	pulse_width,W
+;	cpfslt	counter
+;	movff	l,LATJ
+;	
+;	
+;	
+;	movf	pulse_width,W
+;	cpfsgt	counter
+;	movff	h,LATJ
+	
+	
+	
 	
 	
 	;FIX EQUAL TO COMPARISON ONCE WE KNOW HOW WE ARE COUNTING
-	
-	
-	
 	
 	
 	;Increment counter
@@ -61,21 +79,23 @@ DAC_Int_Hi:
 	retfie	f		; fast return from interrupt
 
 DAC_Setup:
-    
+	
 	movwf	pulse_width
-    
+	
+	
+	
 	movlw	200
 	movwf	period	;20ms = 200 x 100us
 	
-	movlw	0
+	movlw	0 
 	movwf	counter
 	
-	movlw	00000000B
-	movwf	l
-	
-	movlw	11111111B
-	movwf	h
-	
+;	movlw	00000000B
+;	movwf	l
+;	
+;	movlw	11111111B
+;	movwf	h
+;	
     
 	clrf	TRISJ, A	; Set PORTD as all outputs
 	clrf	LATJ, A		; Clear PORTD outputs
@@ -93,5 +113,36 @@ DAC_Setup:
 	bsf	GIE		; Enable all interrupts
 	return
 
+	
+
+pan:
+    
+	movf	pulse_width,W
+	cpfslt	counter
+	bcf LATJ,0
+	
+	
+	
+	movf	pulse_width,W
+	cpfsgt	counter
+	bsf LATJ,0
+	
+	return
+	
+tilt:
+    
+	movf	pulse_width,W
+	cpfslt	counter
+	bcf LATJ,7
+	
+	
+	
+	movf	pulse_width,W
+	cpfsgt	counter
+	bsf LATJ,7
+	
+	return
+	
+	
 	end
 
