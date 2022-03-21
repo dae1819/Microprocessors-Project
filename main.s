@@ -30,14 +30,14 @@ int_hi:	org	0x0008	; high vector, no low vector
 	
 	
 start:	
-	movlw	00000000B
+	movlw	0
 	movwf pan_flag
-	movlw	00000000B
+	movlw	0
 	movwf tilt_flag
     
 	movlw	15
 	movwf	posn_pan
-	movlw	15
+	movlw	17
 	movwf	posn_tilt
 	
 	
@@ -136,6 +136,8 @@ top_bottom: ;COMPARE TOP/BOTTOM
 
 right_rotate:
 	
+    
+    
 	;Increment correct podn vatiable
 	
 	;if pan, increment pan position    
@@ -166,6 +168,8 @@ right_rotate:
 	
 left_rotate:
 	
+    
+    
 	;if pan, decrement pan position    
 	movlw 0
 	cpfseq	pan_flag
