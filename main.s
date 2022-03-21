@@ -1,6 +1,6 @@
 #include <xc.inc>
 
-global pan_flag,tilt_flag,ldr0,ldr1,ldr2,ldr3    
+global pan_flag,tilt_flag,ldr0,ldr1,ldr2,ldr3
 extrn	DAC_Setup, DAC_Int_Hi
 extrn	ADC_Setup0,ADC_Setup1,ADC_Setup2,ADC_Setup3, ADC_Read
 
@@ -11,11 +11,16 @@ ldr2:	ds 1
 ldr3:	ds 1
 posn_pan:	ds 1
 posn_tilt:	ds 1 
+pulse_width_LR:	ds 1
+pulse_width_TB:	ds 1    
+    
+;Stuff for the delays...    
 LCD_cnt_l:	ds 1   ; reserve 1 byte for variable LCD_cnt_l
 LCD_cnt_h:	ds 1   ; reserve 1 byte for variable LCD_cnt_h
 LCD_cnt_ms:	ds 1   ; reserve 1 byte for ms counter
 pan_flag:	ds 1
 tilt_flag:	ds 1
+
     
 psect	code, abs
 rst:	org	0x0000	; reset vector
@@ -30,11 +35,12 @@ int_hi:	org	0x0008	; high vector, no low vector
 	
 	
 start:	
-	movlw	0
+	clrf pan_flag
+	clrf tilt_flag
+   
+	
+	movlw 1
 	movwf pan_flag
-	movlw	0
-	movwf tilt_flag
-    
 	
 	movlw	15
 	movwf	posn_pan
@@ -42,12 +48,20 @@ start:
 	movlw 1000
 	call LCD_delay_ms
 	
+	clrf pan_flag
+	
+	
+	movlw 1
+	movwf tilt_flag
+	
 	
 	movlw	17
 	movwf	posn_tilt
 	call DAC_Setup
 	movlw 1000
 	call LCD_delay_ms
+
+	clrf tilt_flag
 	
 	
 	goto comparison_loop
@@ -131,20 +145,20 @@ top_bottom: ;COMPARE TOP/BOTTOM
 	
 	
 	
-	movlw 1000
-	call LCD_delay_ms
-	movlw 1000
-	call LCD_delay_ms
-	movlw 1000
-	call LCD_delay_ms
-	movlw 1000
-	call LCD_delay_ms
-	movlw 1000
-	call LCD_delay_ms
-	movlw 1000
-	call LCD_delay_ms
-	movlw 1000
-	call LCD_delay_ms
+;	movlw 1000
+;	call LCD_delay_ms
+;	movlw 1000
+;	call LCD_delay_ms
+;	movlw 1000
+;	call LCD_delay_ms
+;	movlw 1000
+;	call LCD_delay_ms
+;	movlw 1000
+;	call LCD_delay_ms
+;	movlw 1000
+;	call LCD_delay_ms
+;	movlw 1000
+;	call LCD_delay_ms
 	
 	
 	goto comparison_loop	
@@ -169,7 +183,7 @@ right_rotate:
 	movlw 1000
 	call LCD_delay_ms
 	
-	;clrf pan_flag
+	clrf pan_flag
 	
 	return
 	
@@ -188,7 +202,7 @@ left_rotate:
 	movlw 1000
 	call LCD_delay_ms
 	
-	;clrf pan_flag
+	clrf pan_flag
 	
 	return
 
@@ -205,7 +219,7 @@ top_rotate:
 	movlw 1000
 	call LCD_delay_ms
 	
-	;clrf tilt_flag
+	clrf tilt_flag
 	
 	return
 	
@@ -224,7 +238,7 @@ bottom_rotate:
 	movlw 1000
 	call LCD_delay_ms
 	
-	;clrf tilt_flag
+	clrf tilt_flag
 	
 	return
 
