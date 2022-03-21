@@ -35,11 +35,19 @@ start:
 	movlw	0
 	movwf tilt_flag
     
+	
 	movlw	15
 	movwf	posn_pan
+	call DAC_Setup
+	movlw 1000
+	call LCD_delay_ms
+	
+	
 	movlw	17
 	movwf	posn_tilt
-	
+	call DAC_Setup
+	movlw 1000
+	call LCD_delay_ms
 	
 	
 	goto comparison_loop
@@ -77,25 +85,17 @@ comparison_loop:
 	
 left_right:
     
-    
-    ;!!!!!!!!!!!!!!!!!
-	movf  ldr0,w	; If light on LDR 0 and LDR 1 is different, set pan_flag as 1 
-	subwf ldr1,w
-	btfss STATUS,2
-	bsf pan_flag,0 
-    
-    
-	movf  ldr0,w
-	subwf ldr1,w
-	btfsc STATUS,2
-	call top_bottom   
-	
-	
-	
-	
-	
-	
-	
+;	movf  ldr0,w	; If light on LDR 0 and LDR 1 is different, set pan_flag as 1 
+;	subwf ldr1,w
+;	btfss STATUS,2
+;	bsf pan_flag,0 
+;    
+;    
+;	movf  ldr0,w
+;	subwf ldr1,w
+;	btfsc STATUS,2
+;	call top_bottom   
+;	
 	
 	
 	movf	ldr0,W,A
@@ -109,107 +109,125 @@ left_right:
     
 	
 top_bottom: ;COMPARE TOP/BOTTOM
-	;!!!!!!!!!!!!!!!!!
-	movf  ldr2,w	; If light on LDR 0 and LDR 1 is different, set tilt_flag as 1 
-	subwf ldr3,w
-	btfss STATUS,2
-	bsf tilt_flag,0 
-    
-	movf  ldr2,w
-	subwf ldr3,w
-	btfsc STATUS,2
-	goto comparison_loop   
 	
+;	movf  ldr2,w	; If light on LDR 0 and LDR 1 is different, set tilt_flag as 1 
+;	subwf ldr3,w
+;	btfss STATUS,2
+;	bsf tilt_flag,0 
+;    
+;	movf  ldr2,w
+;	subwf ldr3,w
+;	btfsc STATUS,2
+;	goto comparison_loop   
+	
+    
 	movf	ldr2,W,A
 	cpfslt	ldr3
-	call	left_rotate
+	call	top_rotate
     
 	movf	ldr2,W,A
 	cpfsgt	ldr3
-	call	right_rotate
+	call	bottom_rotate
 	
+	
+	
+	movlw 1000
+	call LCD_delay_ms
+	movlw 1000
+	call LCD_delay_ms
+	movlw 1000
+	call LCD_delay_ms
+	movlw 1000
+	call LCD_delay_ms
+	movlw 1000
+	call LCD_delay_ms
+	movlw 1000
+	call LCD_delay_ms
+	movlw 1000
+	call LCD_delay_ms
 	
 	
 	goto comparison_loop	
 
 	
 
+	
+	
+	
+	
 right_rotate:
+	movlw 1
+	movwf pan_flag
 	
-    
-    
-	;Increment correct podn vatiable
+	;choose right as decrement
 	
-	;if pan, increment pan position    
-	movlw 0
-	cpfseq	pan_flag
-	call inc_posn_pan
-	
-	
-	;if tilt, increment tilt position    
-	movlw 0
-	cpfseq	tilt_flag
-	call inc_posn_tilt
-	
-	
-	
-	call DAC_Setup
-	
-	movlw 1000
-	call LCD_delay_ms
-	
-	;!!!!!!!!!!!!!!!!!
-	clrf tilt_flag
-	clrf pan_flag
-	
-	return
-
-
-	
-left_rotate:
-	
-    
-    
-	;if pan, decrement pan position    
-	movlw 0
-	cpfseq	pan_flag
-	call dec_posn_pan
-	
-	
-	;if tilt, decrement tilt position    
-	movlw 0
-	cpfseq	tilt_flag
-	call dec_posn_tilt
-	
-	
-	call DAC_Setup
-	
-	movlw 1000
-	call LCD_delay_ms
-	
-	;!!!!!!!!!!!!!!!!!
-	clrf tilt_flag
-	clrf pan_flag
-	
-	return
-
-	
-inc_posn_pan:
-	incf posn_pan
-	movf posn_pan,W,A
-	return
-dec_posn_pan:
 	decf posn_pan
 	movf posn_pan,W,A
+	
+	call DAC_Setup
+	
+	movlw 1000
+	call LCD_delay_ms
+	
+	;clrf pan_flag
+	
 	return
-inc_posn_tilt:
+	
+left_rotate:
+	movlw 1
+	movwf pan_flag
+    
+    
+	;choose left as increment
+  
+	incf posn_pan
+	movf posn_pan,W,A
+	
+	call DAC_Setup
+	
+	movlw 1000
+	call LCD_delay_ms
+	
+	;clrf pan_flag
+	
+	return
+
+top_rotate:
+	movlw 1
+	movwf tilt_flag
+    
+	;choose top as increment
 	incf posn_tilt
 	movf posn_tilt,W,A
+	
+	call DAC_Setup
+	
+	movlw 1000
+	call LCD_delay_ms
+	
+	;clrf tilt_flag
+	
 	return
-dec_posn_tilt:
+	
+	
+bottom_rotate:
+	movlw 1
+	movwf tilt_flag
+	
+	;choose bottom as decrement
 	decf posn_tilt
 	movf posn_tilt,W,A
+	
+	
+	call DAC_Setup
+	
+	movlw 1000
+	call LCD_delay_ms
+	
+	;clrf tilt_flag
+	
 	return
+
 	
 	
 	
