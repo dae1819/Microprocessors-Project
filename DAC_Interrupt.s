@@ -133,13 +133,11 @@ tilt:
     
 	movf	pulse_width,W
 	cpfslt	counter
-	bcf LATJ,7
-	
-	
+	bcf LATJ,6
 	
 	movf	pulse_width,W
 	cpfsgt	counter
-	bsf LATJ,7
+	bsf LATJ,6
 	
 	return
 	
