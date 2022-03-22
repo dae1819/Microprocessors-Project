@@ -60,7 +60,7 @@ start:
 	call DAC_Setup
 	movlw 1000
 	call LCD_delay_ms
-
+ 
 	clrf tilt_flag
 	
 	
