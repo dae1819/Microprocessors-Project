@@ -38,6 +38,7 @@ DAC_Int_Hi:
 	movlw 0
 	cpfseq	pan_flag
 	call pan
+
 	
 	
 	movlw 0
@@ -98,7 +99,17 @@ DAC_Setup:
 ;	
     
 	clrf	TRISJ, A	; Set PORTD as all outputs
-	clrf	LATJ, A		; Clear PORTD outputs
+	;clrf	LATJ, A		; Clear PORTD outputs
+	
+	
+;	movlw 0
+;	cpfseq	pan_flag
+;	bcf LATJ,0
+	
+;	
+;	movlw 0
+;	cpfseq	tilt_flag
+;	bcf LATJ,6
 	
 	
 	;Dont want to count from 0 i.e want 128us -> 100us
