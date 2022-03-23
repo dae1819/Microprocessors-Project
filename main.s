@@ -55,7 +55,7 @@ start:
 	movwf tilt_flag
 	
 	
-	movlw	17
+	movlw	15 ;was 17
 	movwf	posn_tilt
 	call DAC_Setup
 	movlw 1000
@@ -82,8 +82,6 @@ comparison_loop:
 	call ADC_Setup1
 	call measure
 	movwf	ldr1
-	
-
 	
 	call ADC_Setup2
 	call measure
@@ -121,9 +119,15 @@ left_right:
 	cpfsgt	ldr1
 	call	right_rotate
     
+
+	
+	
 	
 top_bottom: ;COMPARE TOP/BOTTOM
 	
+	
+    
+    
 ;	movf  ldr2,w	; If light on LDR 0 and LDR 1 is different, set tilt_flag as 1 
 ;	subwf ldr3,w
 ;	btfss STATUS,2
@@ -206,7 +210,7 @@ left_rotate:
 	
 	return
 
-top_rotate:
+top_rotate: ; im just testing if changing incf to decf will correct
 	movlw 1
 	movwf tilt_flag
     
@@ -224,7 +228,7 @@ top_rotate:
 	return
 	
 	
-bottom_rotate:
+bottom_rotate: ; im just testing if changing decf to incf will correct
 	movlw 1
 	movwf tilt_flag
 	
