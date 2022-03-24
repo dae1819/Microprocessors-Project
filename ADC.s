@@ -58,13 +58,28 @@ ADC_Setup3:
 	movlb	0x0f
 	bsf	ANSEL3	    ; set AN0 to analog
 	movlb	0x00
-	movlw   00010001B	    ; select AN0 for measurement
+	movlw   00001101B	    ; select AN0 for measurement ;00010001B
 	movwf   ADCON0, A   ; and turn ADC on
 	movlw   0x30	    ; Select 4.096V positive reference
 	movwf   ADCON1,	A   ; 0V for -ve reference and -ve input
 	movlw   0xF6	    ; Right justified output
 	movwf   ADCON2, A   ; Fosc/64 clock and acquisition times
 	return	
+
+	
+ADC_Setup_panel:
+	bsf	TRISA, PORTA_RA4_POSN, A  ; pin RA0==AN0 input; CHANGE FOR OTHER PINS!
+	movlb	0x0f
+	bsf	ANSEL4	    ; set AN0 to analog
+	movlb	0x00
+	movlw   0001000B	    ; select AN0 for measurement
+	movwf   ADCON0, A   ; and turn ADC on
+	movlw   0x30	    ; Select 4.096V positive reference
+	movwf   ADCON1,	A   ; 0V for -ve reference and -ve input
+	movlw   0xF6	    ; Right justified output
+	movwf   ADCON2, A   ; Fosc/64 clock and acquisition times
+	return		
+	
 	
 	
 ADC_Read:
