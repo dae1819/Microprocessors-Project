@@ -94,14 +94,16 @@ comparison_loop:
 	call measure
 	movwf	ldr1
 	
-	call ADC_Setup2
-	call measure
-	movwf	ldr2
+	;UART transmission for LDR0;;;;;;;;;;;;;;;;
+	movlw	1
+	lfsr	2, ldr1
+	call	UART_Transmit_Message
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 	
-	call ADC_Setup3
-	call measure
-	movwf	ldr3
+	
+	
+	
 	
 	
 	;COMPARE LEFT/RIGHT
@@ -136,6 +138,27 @@ left_right:
 	
 top_bottom: ;COMPARE TOP/BOTTOM
 	
+	call ADC_Setup2
+	call measure
+	movwf	ldr2
+	
+	;UART transmission for LDR0;;;;;;;;;;;;;;;;
+	movlw	1
+	lfsr	2, ldr2
+	call	UART_Transmit_Message
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	
+	
+	call ADC_Setup3
+	call measure
+	movwf	ldr3
+	
+	;UART transmission for LDR0;;;;;;;;;;;;;;;;
+	movlw	1
+	lfsr	2, ldr3
+	call	UART_Transmit_Message
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
     
     
