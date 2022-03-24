@@ -2,7 +2,7 @@
 
 global pan_flag,tilt_flag,ldr0,ldr1,ldr2,ldr3
 extrn	DAC_Setup, DAC_Int_Hi
-extrn	ADC_Setup0,ADC_Setup1,ADC_Setup2,ADC_Setup3, ADC_Read
+extrn	ADC_Setup0,ADC_Setup1,ADC_Setup2,ADC_Setup3,ADC_Setup_panel ,ADC_Read
 extrn	UART_Setup, UART_Transmit_Message
 
 psect	udata_acs   ; reserve data space in access ram
@@ -10,6 +10,7 @@ ldr0:   ds 1
 ldr1:	ds 1  
 ldr2:	ds 1    
 ldr3:	ds 1
+panel_light:	ds 1
 posn_pan:	ds 1
 posn_tilt:	ds 1 
 pulse_width_LR:	ds 1
@@ -72,6 +73,19 @@ start:
 	
 	
 comparison_loop:
+	call ADC_Setup_panel
+	call measure
+	movwf	panel_light
+	
+	
+	;UART transmission for panel;;;;;;;;;;;;;;;;
+	movlw	1
+	lfsr	2, panel_light
+	call	UART_Transmit_Message
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+    
+    
 	clrf	ldr0
 	clrf	ldr1
 	clrf	ldr2
@@ -94,7 +108,7 @@ comparison_loop:
 	call measure
 	movwf	ldr1
 	
-	;UART transmission for LDR0;;;;;;;;;;;;;;;;
+	;UART transmission for LDR1;;;;;;;;;;;;;;;;
 	movlw	1
 	lfsr	2, ldr1
 	call	UART_Transmit_Message
@@ -122,6 +136,12 @@ left_right:
 ;	call top_bottom   
 ;	
 	
+	;send posn_pan;;;;;;;;;;;;;;;;
+	movlw	1
+	lfsr	2, posn_pan
+	call	UART_Transmit_Message
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    
 	
 	movf	ldr0,W,A
 	cpfslt	ldr1
@@ -142,7 +162,7 @@ top_bottom: ;COMPARE TOP/BOTTOM
 	call measure
 	movwf	ldr2
 	
-	;UART transmission for LDR0;;;;;;;;;;;;;;;;
+	;UART transmission for LDR2;;;;;;;;;;;;;;;;
 	movlw	1
 	lfsr	2, ldr2
 	call	UART_Transmit_Message
@@ -154,7 +174,7 @@ top_bottom: ;COMPARE TOP/BOTTOM
 	call measure
 	movwf	ldr3
 	
-	;UART transmission for LDR0;;;;;;;;;;;;;;;;
+	;UART transmission for LDR3;;;;;;;;;;;;;;;;
 	movlw	1
 	lfsr	2, ldr3
 	call	UART_Transmit_Message
@@ -171,6 +191,14 @@ top_bottom: ;COMPARE TOP/BOTTOM
 ;	subwf ldr3,w
 ;	btfsc STATUS,2
 ;	goto comparison_loop   
+	
+	;send posn_tilt;;;;;;;;;;;;;;;;
+	movlw	1
+	lfsr	2, posn_tilt
+	call	UART_Transmit_Message
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	
 	
     
 	movf	ldr2,W,A
