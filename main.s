@@ -3,6 +3,7 @@
 global pan_flag,tilt_flag,ldr0,ldr1,ldr2,ldr3
 extrn	DAC_Setup, DAC_Int_Hi
 extrn	ADC_Setup0,ADC_Setup1,ADC_Setup2,ADC_Setup3, ADC_Read
+extrn	UART_Setup, UART_Transmit_Message
 
 psect	udata_acs   ; reserve data space in access ram
 ldr0:   ds 1       
@@ -21,6 +22,7 @@ LCD_cnt_ms:	ds 1   ; reserve 1 byte for ms counter
 pan_flag:	ds 1
 tilt_flag:	ds 1
 
+
     
 psect	code, abs
 rst:	org	0x0000	; reset vector
@@ -35,6 +37,8 @@ int_hi:	org	0x0008	; high vector, no low vector
 	
 	
 start:	
+	call UART_Setup
+    
 	clrf pan_flag
 	clrf tilt_flag
    
@@ -77,6 +81,13 @@ comparison_loop:
 	call ADC_Setup0
 	call measure
 	movwf	ldr0
+	
+	
+	;UART transmission for LDR0;;;;;;;;;;;;;;;;
+	movlw	1
+	lfsr	2, ldr0
+	call	UART_Transmit_Message
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 	
 	call ADC_Setup1
