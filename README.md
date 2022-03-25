@@ -1,4 +1,4 @@
-# Project Sunflower : a sun tracking solar panel 
+# Project Sunflower :sunflower: : a sun tracking solar panel 
 The final repo for Microprocessors Project 
 
 Included are the files to implement a sun tracking solar panel
